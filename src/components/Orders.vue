@@ -19,17 +19,24 @@
           td {{ order.urgency }}
           td(nowrap) {{ order.dateActivated | date }}
           td
-            button.btn.btn-primary(type="button") View reports
-    .container#reports Reports
+            button.btn.btn-primary(
+              type="button",
+              v-on:click="getReports(order.orderNumber)"
+            ) View reports
+    #reports-container
+      Reports(v-if="currentOrderNumber", :orderNumber="currentOrderNumber")
 </template>
 
 <script>
+import Reports from "./Reports.vue";
+
 export default {
   name: "Orders",
   data() {
     return {
       API_URL: process.env.VUE_APP_API_URL,
-      orders: []
+      orders: [],
+      currentOrderNumber: ""
     };
   },
   methods: {
@@ -39,24 +46,28 @@ export default {
         .then(function(data) {
           this.orders = data.body.results;
         });
+    },
+    getReports: function(orderNumber) {
+      this.currentOrderNumber = orderNumber;
     }
   },
   created: function() {
     this.getOrders();
   },
   filters: {
-    name: function(value) {
-      return value.split("-")[1];
-    },
-    date: function(value) {
-      let date = new Date(value);
-      return date.toLocaleString();
-    }
+    name: value => value.split("-")[1],
+    date: value => new Date(value).toLocaleString()
+  },
+  components: {
+    Reports
   }
 };
 </script>
 
 <style lang="sass" scoped>
-  #orders
+  table
     text-align: center
+
+  #reports-container
+    padding: 1em
 </style>

@@ -21,10 +21,10 @@
           td
             button.btn.btn-primary(
               type="button",
-              v-on:click="getReports(order.orderNumber)"
+              v-on:click="getReports(order)"
             ) View reports
     #reports-container
-      Reports(v-if="currentOrderNumber", :orderNumber="currentOrderNumber")
+      Reports(v-if="order", :order="order")
 </template>
 
 <script>
@@ -36,7 +36,7 @@ export default {
     return {
       API_URL: process.env.VUE_APP_API_URL,
       orders: [],
-      currentOrderNumber: ""
+      order: null
     };
   },
   methods: {
@@ -47,8 +47,8 @@ export default {
           this.orders = data.body.results;
         });
     },
-    getReports: function(orderNumber) {
-      this.currentOrderNumber = orderNumber;
+    getReports: function(order) {
+      this.order = order;
     }
   },
   created: function() {
